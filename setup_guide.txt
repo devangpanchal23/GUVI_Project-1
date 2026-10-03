@@ -29,7 +29,7 @@ Users interact with the system entirely through an intuitive terminal menu.
 
 During application runtime, all active student records are managed
 in-memory using an ArrayList<Student>. Records are automatically
-persisted to a local flat text file (students.txt) using pipe-delimited
+persisted to a local flat text file (data/students.txt) using pipe-delimited
 formatting, ensuring data is preserved across sessions without requiring
 external database engines.
 
@@ -47,7 +47,7 @@ external database engines.
   * Access Modifiers (private, public)
 - Java Collections Framework (ArrayList<Student>)
 - Console I/O (Scanner, defensive line-by-line reading)
-- File Handling (File, FileReader, BufferedReader, FileWriter, BufferedWriter)
+- File Handling (Files, Path, BufferedReader, BufferedWriter)
 - Exception Handling (try-catch, finally, NumberFormatException, IOException)
 
 ------------------------------------------------------------
@@ -58,7 +58,7 @@ external database engines.
    Prompts for Student ID, Name, Age, Course, and Email.
    Verifies that the Student ID is a positive integer and is unique.
    Instantiates a Student object, stores it in the collection, and
-   saves the record to students.txt.
+   saves the record to data/students.txt.
 
 2. View All Students
    Displays every student record currently in memory.
@@ -73,12 +73,12 @@ external database engines.
    If found, displays current details and prompts for updated Name,
    Age, Course, and Email.
    The Student ID remains unchanged to protect record integrity.
-   Saves updated details to students.txt immediately.
+   Saves updated details to data/students.txt immediately.
 
 5. Delete Student
    Prompts for the Student ID to remove.
    Removes the matching Student from the ArrayList and updates
-   students.txt. Displays confirmation or "Student not found."
+   data/students.txt. Displays confirmation or "Student not found."
 
 6. Exit Application
    Displays a friendly closing message and terminates execution cleanly.
@@ -101,28 +101,29 @@ Each student record consists of five fields:
 
 The project is organized in a single root package for clarity:
 
-StudentManagementSystem/
-│
-├── Main.java
+student-management-system/
+├── data/
+│   └── students.txt
+├── src/
+│   ├── Main.java
 │   Contains the main() method, terminal menu loop, and defensive
 │   user-input validation methods. Delegates business operations
 │   to StudentManager.
-│
-├── Student.java
+│   ├── Student.java
 │   The entity model representing a student. Implements encapsulation
 │   with private attributes, constructor, getters, setters, formatted
 │   console output, and delimited file-string conversion.
-│
-├── StudentManager.java
+│   └── StudentManager.java
 │   Encapsulates the in-memory ArrayList<Student>. Implements CRUD
 │   operations (add, view, search, update, delete) and handles file
 │   persistence (loadStudentsFromFile, saveStudentsToFile).
-│
-├── students.txt
-│   Plain-text persistent storage storing records separated by '|'.
-│
+├── out/                 (created during compilation; ignored by Git)
+├── README.md
 └── setup_guide.txt
     Comprehensive setup, technical overview, and execution guide.
+
+Launch the application from the repository root or from src/. The
+application locates the project's data/students.txt from either place.
 
 ------------------------------------------------------------
 
@@ -166,9 +167,13 @@ macOS / Linux:
 cd /path/to/Project_1
 
 Step 3: Compile all Java source files:
-javac *.java
+javac -d out src/*.java
 
 Step 4: Execute the application:
+java -cp out Main
+
+Alternatively, from src/ compile and launch with:
+javac *.java
 java Main
 
 ------------------------------------------------------------
@@ -236,7 +241,7 @@ Email      : ananya@example.com
 
 12. DATA STORAGE
 
-File: students.txt
+File: data/students.txt
 Format: Pipe-delimited plain text
 
 Format specification:
@@ -247,7 +252,7 @@ Example entries:
 102|Devang Panchal|20|GUVI Full Stack Website Development With AI|devangpanchal2305206@gmail.com
 
 Persistence Behavior:
-- When Main starts, StudentManager reads students.txt.
+- When Main starts from the repository root or src/, StudentManager reads data/students.txt.
 - Valid records are instantiated into Student objects in the ArrayList.
 - Any addition, update, or deletion rewrites the file immediately.
 - Records remain intact across application restarts.
@@ -287,7 +292,7 @@ Persistence Behavior:
   Displays "No student records found." on viewing an empty system.
 - Non-numeric Input:
   Catches NumberFormatException gracefully and re-prompts the user.
-- Missing students.txt:
+- Missing data/students.txt:
   Starts cleanly with an empty list without throwing FileNotFoundException.
 - Corrupted File Records:
   If a line has missing fields or non-numeric IDs/ages, StudentManager
@@ -321,15 +326,15 @@ Why ArrayList:
 
 17. FILE HANDLING
 
-- FileReader and BufferedReader:
-  Used to read records line-by-line efficiently.
-- FileWriter and BufferedWriter:
-  Used to write records back to disk with proper line terminators.
+- Files, Path, and BufferedReader:
+  Used to locate and read records line-by-line efficiently.
+- Files, Path, and BufferedWriter:
+  Used to create the data directory and safely replace records after writing.
 - Delimiter Splitting:
   Uses line.split("\\|") to safely parse pipe delimiters without
   regex collision.
 - Resource Management:
-  File streams are closed safely in finally blocks.
+  File streams are closed safely with try-with-resources.
 
 ------------------------------------------------------------
 
@@ -344,7 +349,7 @@ the JDK bin folder. Install JDK and add its bin folder to PATH.
 Problem:
 "No student records found." when viewing.
 Solution:
-The file students.txt is empty or was not found. Add a student
+The file data/students.txt is empty or was not found. Add a student
 using Option 1 to create the initial file.
 
 Problem:
@@ -381,10 +386,10 @@ By reviewing and running this project, you will understand:
    cd /path/to/Project_1
 
 2. Compile all source files:
-   javac *.java
+   javac -d out src/*.java
 
 3. Run the program:
-   java Main
+   java -cp out Main
 
 4. Enter '2' to view existing students, or '1' to add a new student.
 
