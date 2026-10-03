@@ -1,0 +1,15 @@
+# macOS metadata
+.DS_Store
+
+# Java build output
+*.class
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Build directories
+build/
+out/
+target/

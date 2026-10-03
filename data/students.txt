@@ -1,0 +1,2 @@
+101|Rahul Patel|20|BCA|rahul@example.com
+102|Devang Panchal|20|GUVI Full Stack Website Development With AI|devangpanchal2305206@gmail.com
